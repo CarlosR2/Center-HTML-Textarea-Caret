@@ -1,0 +1,134 @@
+<!doctype html>
+<html><head>
+	</head>
+	<body>
+		
+
+		<div class="" style="text-align:center;margin-top:30px">
+			
+			<textarea id="textarea" rows="30" cols="30"  wrap="off" >
+			
+Note: the textarea needs to add the wrap attribute to "off". Otherwsise this is not useful as lines of the text wont match the lines in the textarea
+Another strategy is to specify negative scrollTop to the textarea so the browser will force to center;
+			
+Lorem ipsum dolor sit amet, et scripta complectitur delicatissimi vis, elitr utinam graeci qui no. Nam te labitur maiestatis reformidans, libris epicuri expetenda an sed. Ne oblique lobortis mea, eu sea audiam scripta. 
+Mea fierent referrentur cu, at duo recusabo quaestio, adhuc dicunt docendi pri ea.
+
+Semper placerat pertinacia his id, scripta dignissim definiebas ne pri. Et eam laboramus dissentias necessitatibus, vel et iisque eleifend. 
+No ridens graeco dictas eos, ex postea fastidii nec, vis utamur diceret oportere ad. Dico sanctus omittantur id vim, ut cum debet invenire. 
+Eu sit sumo dissentiet, ex tale tempor per, dico lorem suavitate usu.
+								
+Lorem ipsum dolor sit amet, et scripta complectitur delicatissimi vis, elitr utinam graeci qui no. 
+
+Nam te labitur maiestatis reformidans, libris epicuri expetenda an sed. Ne oblique lobortis mea, eu sea audiam scripta. 
+Mea fierent referrentur cu, at duo recusabo quaestio, adhuc dicunt docendi pri ea.
+
+Semper placerat pertinacia his id, scripta dignissim definiebas ne pri. 
+Et eam laboramus dissentias necessitatibus, vel et iisque eleifend. 
+No ridens graeco dictas eos, ex postea fastidii nec, vis utamur diceret oportere ad. Dico sanctus omittantur id vim, ut cum debet invenire. Eu sit sumo dissentiet, ex tale tempor per, dico lorem suavitate usu.
+
+Lorem ipsum dolor sit amet, et scripta complectitur delicatissimi vis, elitr utinam graeci qui no. 
+Nam te labitur maiestatis reformidans, libris epicuri expetenda an sed. Ne oblique lobortis mea, eu sea audiam scripta. 
+Mea fierent referrentur cu, at duo recusabo quaestio, adhuc dicunt docendi pri ea.
+
+Semper placerat pertinacia his id, scripta dignissim definiebas ne pri. Et eam laboramus dissentias necessitatibus, vel et iisque eleifend. 
+No ridens graeco dictas eos, ex postea fastidii nec, vis utamur diceret oportere ad. Dico sanctus omittantur id vim, ut cum debet invenire. Eu sit sumo dissentiet, ex tale tempor per, dico lorem suavitate usu.
+
+Lorem ipsum dolor sit amet, et scripta complectitur delicatissimi vis, elitr utinam graeci qui no. Nam te labitur maiestatis reformidans, libris epicuri expetenda an sed. Ne oblique lobortis mea, eu sea audiam scripta. 
+Mea fierent referrentur cu, at duo recusabo quaestio, adhuc dicunt docendi pri ea.
+
+Semper placerat pertinacia his id, scripta dignissim definiebas ne pri. 
+Et eam laboramus dissentias necessitatibus, vel et iisque eleifend. 
+No ridens graeco dictas eos, ex postea fastidii nec, vis utamur diceret oportere ad. Dico sanctus omittantur id vim, ut cum debet invenire. 
+Eu sit sumo dissentiet, ex tale tempor per, dico lorem suavitate usu.
+
+Lorem ipsum dolor sit amet, et scripta complectitur delicatissimi vis, elitr utinam graeci qui no. Nam te labitur maiestatis reformidans, libris epicuri expetenda an sed. 
+Ne oblique lobortis mea, eu sea audiam scripta. Mea fierent referrentur cu, at duo recusabo quaestio, adhuc dicunt docendi pri ea.
+
+Semper placerat pertinacia his id, scripta dignissim definiebas ne pri. 
+Et eam laboramus dissentias necessitatibus, vel et iisque eleifend. 
+No ridens graeco dictas eos, ex postea fastidii nec, vis utamur diceret oportere ad. Dico sanctus omittantur id vim, ut cum debet invenire. 
+Eu sit sumo dissentiet, ex tale tempor per, dico lorem suavitate usu.
+
+
+			
+				
+			</textarea>
+			
+		</div>
+
+
+		<div style="clear:both"> </div>
+
+
+		<script>
+
+			
+			document.addEventListener("DOMContentLoaded", function(event) {
+				document.querySelector('#textarea').addEventListener('keydown',function(e){										
+					center_caret('#textarea');
+				});
+			});
+
+			function center_caret(element,default_line_height = 14){
+				
+				
+				
+				// Theory: if line-height 20px;, then line 50 -> scrollTop = 1000px (20*50)
+				var textarea = document.querySelector(element);								
+				if(!textarea) return false;
+				
+				/*Another strategy is to force scrolltop to a negative value so the browser will center the textarea*/
+				/*
+				textarea.scrollTop = -100;
+				return;
+				*/
+				/**/
+				
+				var styles = document.defaultView.getComputedStyle(textarea,'');				
+				var lineHeight = styles['line-height'];																  																   
+				if(!lineHeight || lineHeight.indexOf('px')==-1){
+					//If not set in px, set some default styles
+					lineHeight = default_line_height;
+					textarea.style.lineHeight= lineHeight+'px';
+					textarea.style.fontSize= '12px';					
+				}else{
+					lineHeight = lineHeight.replace('px','');
+				}
+
+
+				var caret_pos = textarea.selectionStart;
+				var text = textarea.value;
+				var lines = text.split(`
+`);			
+				// find out what is current caret line
+				// // // document.querySelector('#sbv').value[i] == '\n';		-> if true, line++;
+				// // // or split by lines and count;
+				var chars_acum = 0;
+				var current_line = 0;
+				var caret_line = 0;
+				for(i=0;i<lines.length;i++){
+					current_line++;
+					var size = lines[i].length;
+					chars_acum += size+1 // count also new line
+					if(chars_acum>caret_pos){
+						caret_line = current_line;						
+						break;
+					}
+				}
+				// If for example is linea 70 and line height 20, then scrollTop should be (140px-textareaHeight/2) 
+ 				var pixel_position_line = caret_line*lineHeight;
+ 				
+				var textarea_height = textarea.offsetHeight;
+ 				var new_scroll_top = pixel_position_line-(textarea_height/2);
+ 				textarea.scrollTop = new_scroll_top;
+											
+				// and we are centered
+				return true;
+			}
+
+
+		</script>
+ 
+	</body>
+</html>
